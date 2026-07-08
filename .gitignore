@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+templates/
+output/
+qdrant_db/
+*.pyc
+*.log
+merged_code.txt
