@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hwpx-genai-template-agent"
+version = "0.1.0"
+description = "HWPX template retrieval and field-filling agent."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "openai",
+  "pydantic",
+  "qdrant-client",
+  "llama-index-embeddings-huggingface",
+  "sentence-transformers",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+hwpx-genai-template-agent = "hwpx_genai_template_agent.cli:main"
+
+[tool.setuptools]
+packages = [
+  "hwpx_genai_template_agent",
+  "hwpx_genai_template_agent.core",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

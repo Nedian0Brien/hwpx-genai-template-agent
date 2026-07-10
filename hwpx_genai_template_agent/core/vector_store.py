@@ -1,15 +1,10 @@
 import uuid
 import os
 from typing import List, Optional
-from qdrant_client import QdrantClient
-from qdrant_client.http import models as qmodels
 
-# [Changed] sentence_transformers 대신 llama_index 사용
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-
-from config import Config
-from models import TemplateMetadata
-from core.hwpx_processor import HwpxProcessor
+from ..config import Config
+from ..models import TemplateMetadata
+from .hwpx_processor import HwpxProcessor
 
 class TemplateRetriever:
     """
@@ -19,6 +14,12 @@ class TemplateRetriever:
     """
 
     def __init__(self):
+        from qdrant_client import QdrantClient
+        from qdrant_client.http import models as qmodels
+        from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+
+        self._qmodels = qmodels
+
         # 1. 임베딩 모델 로드 (LlamaIndex HuggingFaceEmbedding 사용)
         print(f"[Info] 임베딩 모델 로드 중: {Config.EMBEDDING_MODEL}")
         # [Changed] HuggingFaceEmbedding 초기화 (device 등 추가 설정 가능)
@@ -47,9 +48,9 @@ class TemplateRetriever:
             
             self.client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=qmodels.VectorParams(
+                vectors_config=self._qmodels.VectorParams(
                     size=vector_size,
-                    distance=qmodels.Distance.COSINE
+                    distance=self._qmodels.Distance.COSINE
                 )
             )
             print(f"[Info] Qdrant 컬렉션 생성 완료: {self.collection_name} (Size: {vector_size})")
@@ -90,7 +91,7 @@ class TemplateRetriever:
             self.client.upsert(
                 collection_name=self.collection_name,
                 points=[
-                    qmodels.PointStruct(
+                    self._qmodels.PointStruct(
                         id=doc_id,
                         vector=embedding,
                         payload=payload

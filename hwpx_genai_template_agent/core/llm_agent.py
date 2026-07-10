@@ -1,9 +1,7 @@
 import json
 import re
-from typing import List, Dict, Any, Type
-from openai import OpenAI
-from pydantic import create_model, Field, ValidationError, BaseModel # [Added] Pydantic 모듈
-from config import Config
+from typing import List, Dict, Any
+from ..config import Config
 
 class DataGenerator:
     """
@@ -13,6 +11,8 @@ class DataGenerator:
     """
 
     def __init__(self):
+        from openai import OpenAI
+
         # [Changed] 내부망 LLM 연동을 위한 base_url 추가
         self.client = OpenAI(
             api_key=Config.LLM_API_KEY,
@@ -20,11 +20,13 @@ class DataGenerator:
         )
         self.model = Config.LLM_MODEL
 
-    def _create_dynamic_model(self, schema: List[str]) -> Type[BaseModel]:
+    def _create_dynamic_model(self, schema: List[str]) -> Any:
         """
         [NEW] 런타임에 주어진 필드 목록(Schema)을 기반으로 Pydantic 모델 클래스를 동적 생성합니다.
         모든 필드는 문자열(str)이며, 누락 시 빈 문자열("")을 기본값으로 가집니다.
         """
+        from pydantic import Field, create_model
+
         field_definitions = {
             field: (str, Field(default="", description=f"Value for {field}"))
             for field in schema
@@ -38,6 +40,8 @@ class DataGenerator:
         """
         if not schema:
             return {}
+
+        from pydantic import ValidationError
 
         # 1. Pydantic 동적 모델 생성
         DynamicModel = self._create_dynamic_model(schema)

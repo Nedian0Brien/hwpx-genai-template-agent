@@ -1,7 +1,9 @@
-from typing import List, Dict, Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
+from typing import List, Optional
 
-class TemplateMetadata(BaseModel):
+
+@dataclass
+class TemplateMetadata:
     """
     [템플릿 메타데이터]
     벡터 DB(Qdrant)에 저장되고 검색될 문서 양식 정보
@@ -12,7 +14,9 @@ class TemplateMetadata(BaseModel):
     field_schema: List[str] # 문서 내 존재하는 누름틀(Field) 이름 목록
     file_path: str          # 실제 파일 시스템 경로
 
-class GenerationResult(BaseModel):
+
+@dataclass
+class GenerationResult:
     """
     [문서 생성 결과]
     HwpxProcessor가 작업을 마친 후 반환하는 결과 객체

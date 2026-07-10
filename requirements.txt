@@ -1,5 +1,6 @@
 openai
 pydantic
 qdrant-client
+llama-index-embeddings-huggingface
 sentence-transformers
 pytest

@@ -4,8 +4,8 @@ import os
 import shutil
 import tempfile
 from typing import List, Dict, Set
-from config import Config
-from models import GenerationResult
+from ..config import Config
+from ..models import GenerationResult
 
 class HwpxProcessor:
     """
